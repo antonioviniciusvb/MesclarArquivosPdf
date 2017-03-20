@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MesclarArquivosPdf.Properties
+namespace MergeFilesPdf.Properties
 {
 
 
