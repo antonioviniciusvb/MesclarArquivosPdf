@@ -1,6 +1,6 @@
 ﻿namespace MergeFilesPdf
 {
-    partial class frPrincipal
+    partial class FRPrincipal
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frPrincipal));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FRPrincipal));
             this.toolstrip = new System.Windows.Forms.ToolStrip();
             this.toolProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -38,12 +38,19 @@
             this.opf = new System.Windows.Forms.OpenFileDialog();
             this.lstViewerArquivos = new System.Windows.Forms.ListView();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.lstbTxtLogica = new System.Windows.Forms.ListBox();
+            this.lsBoxPdfLogica = new System.Windows.Forms.ListBox();
+            this.grpbArquivos = new System.Windows.Forms.GroupBox();
             this.rdbPdf = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.grpbArquivos = new System.Windows.Forms.GroupBox();
-            this.lstbLogica = new System.Windows.Forms.ListBox();
+            this.menuFrm = new System.Windows.Forms.MenuStrip();
+            this.arquivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configuraçõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.abrirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolstrip.SuspendLayout();
             this.grpbArquivos.SuspendLayout();
+            this.menuFrm.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolstrip
@@ -121,6 +128,51 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // lstbTxtLogica
+            // 
+            this.lstbTxtLogica.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lstbTxtLogica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstbTxtLogica.FormattingEnabled = true;
+            this.lstbTxtLogica.Items.AddRange(new object[] {
+            "1 Registro - 1 linha",
+            "1 Registro - 2 linhas",
+            "1 Regsitro - 3 linhas",
+            "1 Registro - 4 linhas",
+            "1 Registro - 5 linhas",
+            "Desconsiderar 1 linha",
+            "Prefeitura de Brusque - contas de água"});
+            this.lstbTxtLogica.Location = new System.Drawing.Point(164, 244);
+            this.lstbTxtLogica.Name = "lstbTxtLogica";
+            this.lstbTxtLogica.ScrollAlwaysVisible = true;
+            this.lstbTxtLogica.Size = new System.Drawing.Size(226, 67);
+            this.lstbTxtLogica.TabIndex = 11;
+            // 
+            // lsBoxPdfLogica
+            // 
+            this.lsBoxPdfLogica.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lsBoxPdfLogica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lsBoxPdfLogica.FormattingEnabled = true;
+            this.lsBoxPdfLogica.Items.AddRange(new object[] {
+            "Simplex",
+            "Duplex"});
+            this.lsBoxPdfLogica.Location = new System.Drawing.Point(440, 255);
+            this.lsBoxPdfLogica.Name = "lsBoxPdfLogica";
+            this.lsBoxPdfLogica.ScrollAlwaysVisible = true;
+            this.lsBoxPdfLogica.Size = new System.Drawing.Size(73, 41);
+            this.lsBoxPdfLogica.TabIndex = 12;
+            // 
+            // grpbArquivos
+            // 
+            this.grpbArquivos.Controls.Add(this.rdbPdf);
+            this.grpbArquivos.Controls.Add(this.radioButton1);
+            this.grpbArquivos.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.grpbArquivos.Location = new System.Drawing.Point(346, 232);
+            this.grpbArquivos.Name = "grpbArquivos";
+            this.grpbArquivos.Size = new System.Drawing.Size(64, 71);
+            this.grpbArquivos.TabIndex = 13;
+            this.grpbArquivos.TabStop = false;
+            this.grpbArquivos.Text = "Arquivos";
+            // 
             // rdbPdf
             // 
             this.rdbPdf.AutoSize = true;
@@ -145,59 +197,75 @@
             this.radioButton1.Text = "TXT";
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
-            // grpbArquivos
+            // menuFrm
             // 
-            this.grpbArquivos.Controls.Add(this.rdbPdf);
-            this.grpbArquivos.Controls.Add(this.radioButton1);
-            this.grpbArquivos.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.grpbArquivos.Location = new System.Drawing.Point(135, 80);
-            this.grpbArquivos.Name = "grpbArquivos";
-            this.grpbArquivos.Size = new System.Drawing.Size(64, 71);
-            this.grpbArquivos.TabIndex = 9;
-            this.grpbArquivos.TabStop = false;
-            this.grpbArquivos.Text = "Arquivos";
+            this.menuFrm.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
+            this.menuFrm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.arquivoToolStripMenuItem,
+            this.configuraçõesToolStripMenuItem});
+            this.menuFrm.Location = new System.Drawing.Point(0, 0);
+            this.menuFrm.Name = "menuFrm";
+            this.menuFrm.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.menuFrm.Size = new System.Drawing.Size(756, 24);
+            this.menuFrm.TabIndex = 14;
             // 
-            // lstbLogica
+            // arquivoToolStripMenuItem
             // 
-            this.lstbLogica.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lstbLogica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstbLogica.FormattingEnabled = true;
-            this.lstbLogica.Items.AddRange(new object[] {
-            "1 Registro - 1 linha",
-            "1 Registro - 2 linhas",
-            "1 Regsitro - 3 linhas",
-            "1 Registro - 4 linhas",
-            "1 Registro - 5 linhas",
-            "Desconsiderar 1 linha",
-            "Prefeitura de Brusque - contas de água"});
-            this.lstbLogica.Location = new System.Drawing.Point(265, 84);
-            this.lstbLogica.Name = "lstbLogica";
-            this.lstbLogica.ScrollAlwaysVisible = true;
-            this.lstbLogica.Size = new System.Drawing.Size(226, 67);
-            this.lstbLogica.TabIndex = 11;
+            this.arquivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.abrirToolStripMenuItem});
+            this.arquivoToolStripMenuItem.Name = "arquivoToolStripMenuItem";
+            this.arquivoToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.arquivoToolStripMenuItem.Text = "Arquivo";
             // 
-            // frPrincipal
+            // abrirToolStripMenuItem
+            // 
+            this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.abrirToolStripMenuItem.Text = "Abrir";
+            // 
+            // configuraçõesToolStripMenuItem
+            // 
+            this.configuraçõesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.abrirToolStripMenuItem1});
+            this.configuraçõesToolStripMenuItem.Name = "configuraçõesToolStripMenuItem";
+            this.configuraçõesToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+            this.configuraçõesToolStripMenuItem.Text = "Ferramentas";
+           
+            // 
+            // abrirToolStripMenuItem1
+            // 
+            this.abrirToolStripMenuItem1.Name = "abrirToolStripMenuItem1";
+            this.abrirToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.abrirToolStripMenuItem1.Text = "Configurações";
+           
+            //
+            // FRPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(78)))), ((int)(((byte)(102)))));
             this.ClientSize = new System.Drawing.Size(756, 534);
             this.Controls.Add(this.grpbArquivos);
-            this.Controls.Add(this.lstbLogica);
+            this.Controls.Add(this.lsBoxPdfLogica);
+            this.Controls.Add(this.lstbTxtLogica);
             this.Controls.Add(this.lstViewerArquivos);
             this.Controls.Add(this.btnSelectFiles);
             this.Controls.Add(this.txtBoxArquivosSelecionados);
             this.Controls.Add(this.toolstrip);
+            this.Controls.Add(this.menuFrm);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuFrm;
             this.MaximizeBox = false;
-            this.Name = "frPrincipal";
+            this.Name = "FRPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Mesclar Arquivos ";
             this.toolstrip.ResumeLayout(false);
             this.toolstrip.PerformLayout();
             this.grpbArquivos.ResumeLayout(false);
             this.grpbArquivos.PerformLayout();
+            this.menuFrm.ResumeLayout(false);
+            this.menuFrm.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,10 +282,16 @@
         private System.Windows.Forms.OpenFileDialog opf;
         private System.Windows.Forms.ListView lstViewerArquivos;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ListBox lstbTxtLogica;
+        private System.Windows.Forms.ListBox lsBoxPdfLogica;
+        private System.Windows.Forms.GroupBox grpbArquivos;
         private System.Windows.Forms.RadioButton rdbPdf;
         private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.GroupBox grpbArquivos;
-        private System.Windows.Forms.ListBox lstbLogica;
+        private System.Windows.Forms.MenuStrip menuFrm;
+        private System.Windows.Forms.ToolStripMenuItem arquivoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configuraçõesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem1;
     }
 }
 

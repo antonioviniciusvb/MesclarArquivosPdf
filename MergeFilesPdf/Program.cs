@@ -16,7 +16,8 @@ namespace MergeFilesPdf
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frPrincipal());
+            //Application.Run(new FRPrincipal());
+            Application.Run(new FrOpcoes());
         }
     }
 }
