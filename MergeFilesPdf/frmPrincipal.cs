@@ -33,14 +33,17 @@ namespace MergeFilesPdf
 
         private int qntArquivos;
 
-        public FRPrincipal()
+        /// <summary>
+        /// Construtor do form principal, com o um parâmetro string[] que irá conter os resultados para configurar o form
+        /// </summary>
+        /// <param name="results"></param>
+        public FRPrincipal(int[] results)
         {
-
             InitializeComponent();
             getInfoAssembly();
             infoArquivos = new List<FileInfo>();
             controle = new IndexadorInteiros(0);
-            criarColunasListView();
+            criarColunasListView();   
         }
 
         /// <summary>
@@ -213,47 +216,47 @@ namespace MergeFilesPdf
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnSelectFiles_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (opf.ShowDialog() == DialogResult.OK)
-                {
-                    if (opf.FileNames.Length > 0)
-                    {
-                        if (controle[2] == false)
-                        {
-                            criarListArquivos();
-                            controle[2] = true;
-                        }
+        //private void btnSelectFiles_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (opf.ShowDialog() == DialogResult.OK)
+        //        {
+        //            if (opf.FileNames.Length > 0)
+        //            {
+        //                if (controle[2] == false)
+        //                {
+        //                    criarListArquivos();
+        //                    controle[2] = true;
+        //                }
 
-                        if (controle[4] == true && verificarDuplicidadeEndArq() == false)
-                        {
-                            addItensList();
-                            lstViewerArquivos.Items.Clear();
-                            setarListViewcomArquivos();
-                        }
-                        else
-                        {
-                            addItensList();
-                            lstViewerArquivos.Items.Clear();
-                            setarListViewcomArquivos();
-                            controle[4] = true;
-                        }
+        //                if (controle[4] == true && verificarDuplicidadeEndArq() == false)
+        //                {
+        //                    addItensList();
+        //                    lstViewerArquivos.Items.Clear();
+        //                    setarListViewcomArquivos();
+        //                }
+        //                else
+        //                {
+        //                    addItensList();
+        //                    lstViewerArquivos.Items.Clear();
+        //                    setarListViewcomArquivos();
+        //                    controle[4] = true;
+        //                }
 
-                        setarListViewcomArquivos(definirTotalArquivos());
-                        setarValoresTxtBox();
+        //                setarListViewcomArquivos(definirTotalArquivos());
+        //                setarValoresTxtBox();
                     
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Erro !", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Erro !", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
 
-            return;
-        }
+        //    return;
+        //}
 
         /// <summary>
         /// Método para garantir que não terá arquivos iguais
@@ -279,12 +282,11 @@ namespace MergeFilesPdf
         /// </summary>
         private void addItensList()
         {
-            int[] pgs;
+            //int[] pgs;
 
-            if (rdbPdf.Checked == true)
-                pgs = Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(opf.FileNames);
-            else
-              pgs = ArqTexto.QntdArquivoTxt(opf.FileNames, lstbTxtLogica.SelectedIndex).ToArray<int>();
+            //    pgs = Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(opf.FileNames);
+            //else
+            //  pgs = ArqTexto.QntdArquivoTxt(opf.FileNames, lstbTxtLogica.SelectedIndex).ToArray<int>();
 
 
 
@@ -296,7 +298,7 @@ namespace MergeFilesPdf
                 {
                     Id = qntArquivos,
                     Nome = opf.FileNames[i],
-                    Pgs = pgs[i]
+                    //Pgs = pgs[i]
                 });
 
 
@@ -551,7 +553,56 @@ namespace MergeFilesPdf
             return;
         }
 
-  
+        private void abrirToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+            FrOpcoes frOpcoes = new FrOpcoes();
+            frOpcoes.ShowDialog();
+        }
+
+        private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (opf.ShowDialog() == DialogResult.OK)
+                {
+                    if (opf.FileNames.Length > 0)
+                    {
+                        if (controle[2] == false)
+                        {
+                            criarListArquivos();
+                            controle[2] = true;
+                        }
+
+                        if (controle[4] == true && verificarDuplicidadeEndArq() == false)
+                        {
+                            addItensList();
+                            lstViewerArquivos.Items.Clear();
+                            setarListViewcomArquivos();
+                        }
+                        else
+                        {
+                            addItensList();
+                            lstViewerArquivos.Items.Clear();
+                            setarListViewcomArquivos();
+                            controle[4] = true;
+                        }
+
+                        setarListViewcomArquivos(definirTotalArquivos());
+                        setarValoresTxtBox();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro !", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
         /// <summary>
         /// Método para verificar se tem algum item no listviewer
         /// </summary>

@@ -33,6 +33,10 @@
             this.lblTipoArquivo = new System.Windows.Forms.Label();
             this.lblOpcoesProcessamento = new System.Windows.Forms.Label();
             this.grpBoxOpcoesConfig = new System.Windows.Forms.GroupBox();
+            this.lstBoxLogica = new System.Windows.Forms.ListBox();
+            this.lbLogica = new System.Windows.Forms.Label();
+            this.btnLimpar = new System.Windows.Forms.Button();
+            this.btnIniciar = new System.Windows.Forms.Button();
             this.grpBoxOpcoesConfig.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,6 +89,8 @@
             // grpBoxOpcoesConfig
             // 
             this.grpBoxOpcoesConfig.BackColor = System.Drawing.Color.Silver;
+            this.grpBoxOpcoesConfig.Controls.Add(this.lstBoxLogica);
+            this.grpBoxOpcoesConfig.Controls.Add(this.lbLogica);
             this.grpBoxOpcoesConfig.Controls.Add(this.lblTipoArquivo);
             this.grpBoxOpcoesConfig.Controls.Add(this.lstGeracao);
             this.grpBoxOpcoesConfig.Controls.Add(this.lblOpcoesProcessamento);
@@ -93,18 +99,64 @@
             this.grpBoxOpcoesConfig.ForeColor = System.Drawing.SystemColors.ControlText;
             this.grpBoxOpcoesConfig.Location = new System.Drawing.Point(12, 12);
             this.grpBoxOpcoesConfig.Name = "grpBoxOpcoesConfig";
-            this.grpBoxOpcoesConfig.Size = new System.Drawing.Size(374, 351);
+            this.grpBoxOpcoesConfig.Size = new System.Drawing.Size(374, 345);
             this.grpBoxOpcoesConfig.TabIndex = 18;
             this.grpBoxOpcoesConfig.TabStop = false;
             this.grpBoxOpcoesConfig.Text = "Selecione as Opções desejadas:";
+            // 
+            // lstBoxLogica
+            // 
+            this.lstBoxLogica.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstBoxLogica.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.lstBoxLogica.FormattingEnabled = true;
+            this.lstBoxLogica.HorizontalScrollbar = true;
+            this.lstBoxLogica.ItemHeight = 15;
+            this.lstBoxLogica.Location = new System.Drawing.Point(22, 234);
+            this.lstBoxLogica.Name = "lstBoxLogica";
+            this.lstBoxLogica.Size = new System.Drawing.Size(327, 94);
+            this.lstBoxLogica.TabIndex = 18;
+            // 
+            // lbLogica
+            // 
+            this.lbLogica.AutoSize = true;
+            this.lbLogica.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbLogica.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.lbLogica.Location = new System.Drawing.Point(19, 212);
+            this.lbLogica.Name = "lbLogica";
+            this.lbLogica.Size = new System.Drawing.Size(50, 17);
+            this.lbLogica.TabIndex = 19;
+            this.lbLogica.Text = "Lógica";
+            // 
+            // btnLimpar
+            // 
+            this.btnLimpar.Location = new System.Drawing.Point(406, 105);
+            this.btnLimpar.Name = "btnLimpar";
+            this.btnLimpar.Size = new System.Drawing.Size(79, 37);
+            this.btnLimpar.TabIndex = 19;
+            this.btnLimpar.Text = "Limpar";
+            this.btnLimpar.UseVisualStyleBackColor = true;
+            this.btnLimpar.Click += new System.EventHandler(this.btnLimpar_Click);
+            // 
+            // btnIniciar
+            // 
+            this.btnIniciar.Location = new System.Drawing.Point(408, 164);
+            this.btnIniciar.Name = "btnIniciar";
+            this.btnIniciar.Size = new System.Drawing.Size(77, 36);
+            this.btnIniciar.TabIndex = 20;
+            this.btnIniciar.Text = "Iniciar";
+            this.btnIniciar.UseVisualStyleBackColor = true;
+            this.btnIniciar.Click += new System.EventHandler(this.btnIniciar_Click);
             // 
             // FrOpcoes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(398, 375);
+            this.ClientSize = new System.Drawing.Size(505, 364);
+            this.Controls.Add(this.btnIniciar);
+            this.Controls.Add(this.btnLimpar);
             this.Controls.Add(this.grpBoxOpcoesConfig);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "FrOpcoes";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Configurações";
@@ -120,5 +172,9 @@
         private System.Windows.Forms.Label lblTipoArquivo;
         private System.Windows.Forms.Label lblOpcoesProcessamento;
         private System.Windows.Forms.GroupBox grpBoxOpcoesConfig;
+        private System.Windows.Forms.ListBox lstBoxLogica;
+        private System.Windows.Forms.Label lbLogica;
+        private System.Windows.Forms.Button btnLimpar;
+        private System.Windows.Forms.Button btnIniciar;
     }
 }
