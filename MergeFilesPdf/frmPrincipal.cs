@@ -9,6 +9,7 @@ using System.Reflection;
 using Controle;
 using System.IO;
 using Vnsdll;
+using System.Diagnostics;
 
 
 namespace MergeFilesPdf
@@ -24,28 +25,47 @@ namespace MergeFilesPdf
         //controle[1] == controle do método setarValoresTxtBox() -- ocioso
         //controle[2] == controle do event click do button btnSelectFiles()
         //controle[3] == controle do método definir definirNomesdeExclusao()
-        //controle[4] == controle do para chamar método verificarDuplicidadeEndArq()
+        //controle[4] == controle  para chamar método verificarDuplicidadeEndArq()
 
+        private string config;
 
         //List que carregará os arquivos
         private List<Arquivo> lsArq, lsExclusao;
+
+
+        private Detalhe details;
         
 
         private int qntArquivos;
 
-        /// <summary>
-        /// Construtor do form principal, com o um parâmetro string[] que irá conter os resultados para configurar o form
-        /// </summary>
-        /// <param name="results"></param>
-        public FRPrincipal(int[] results)
+        public FRPrincipal()
         {
             InitializeComponent();
             getInfoAssembly();
+            limparArqConfig();
             infoArquivos = new List<FileInfo>();
             controle = new IndexadorInteiros(0);
-            criarColunasListView();   
+            criarColunasListView(lstViewerArquivos, "MergeFilesPdf.Arquivo");
+            criarColunasListView(lstViewerDetalhes, "MergeFilesPdf.Detalhe");
         }
 
+        private void definirConfigForm()
+        {
+            config = lerArqConfig();
+            if (config[0] == '1')
+                opf.Filter = "Arquivos de Texto|*.txt";
+            else
+                opf.Filter = "Arquivos Pdf|*.pdf";
+        }
+
+        private string lerArqConfig()
+        {
+            string linha = "", aux = "";
+            using (StreamReader str = new StreamReader(Configuracao.txtConfig))
+                while ((aux = str.ReadLine()) != null)
+                    linha = aux;
+            return linha;
+        }
         /// <summary>
         /// Método para inserir o número da versão do Assembly no text do form 
         /// </summary>
@@ -57,31 +77,103 @@ namespace MergeFilesPdf
         }
 
         /// <summary>
+        /// Método para limpar o arquivo de configuração
+        /// </summary>
+        private void limparArqConfig()
+        {
+            //limpando arquivo de configuração
+            try
+            {
+                using (StreamWriter stw = new StreamWriter(Configuracao.txtConfig,false))
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
+
+        }
+        /// <summary>
         /// Evento click do button start
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void toolStart_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show(ArqTexto.QntdArquivoTxt(lsArq[0].Nome).ToString());
-            
             try
             {
+    
                 if (!(controle[0]))
                 {
                     if (verificaQntdListView())
                     {
-                        //if (Vnsdll.ValidacaoArquivo.validaExtensaoPdf(opf.FileNames.ToArray()))
-                        //{
-                        string nomeArqRelatorioArquivos = "Relatorio_", nomeArqMesclado = "", nomeArqRelatorioIntervaloPgs = "Relatorio_Intervalo_Pgs_";
+                        switch (config[0])
+                        {
+                            
+                            //************** Entrada para Funções de txt *******************
+                            case '1':
+                                
+                                switch (config[1])
+                                {
+                                    case '1':
+                                        //Gerar Apenas Capas 
+                                        for (int i = 0; i < lsArq.Count; i++)
+                                            Pdf.CriaCapasdeLoteArqTxt(lsArq[i].Nome, lsArq[i].Pgs);
+                                        break;
+
+                                        
+
+                                    case '2':
+
+                                        string nomeArqRelatorioArquivos = string.Format("Relatorio_Total_{0}.pdf", details.Total);
+
+                                        //Gerar Capas e relatório qntd 
+                                        for (int i = 0; i < lsArq.Count; i++)
+                                        {
+                                            Pdf.CriaCapasdeLoteArqTxt(lsArq[i].Nome, lsArq[i].Pgs);
+                                            Pdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioArquivosTxt(lsArq));
+                                        }
+                                        break;
+
+                                    case '3':
+                                        //Gerar Capas e relatório qntd 
+                                        for (int i = 0; i < lsArq.Count; i++)
+                                        {
+                                            string nomeArqRelatorioArquivos2 = string.Format("Relatorio_Total_{0}.pdf", details.Total);
+
+                                            //Gerar Apenas Relatório qntd
+                                            addInformacoesRelatorioArquivosTxt(lsArq);
+                                            Pdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos2, addInformacoesRelatorioArquivosTxt(lsArq));
+                                        }
+                                        
+                                        break;
+                                }
+                                // ************************* Fim *****************************
+                                break;
+
+                            //Entrada para Funções de pdf
+                            case '2':
+
+                                switch (config[1])
+                                {
+                                    
+                                }
+
+                                break;
+                        }
+
+                      // 
                         //string[] nomesDasCapas = new string[lsArq.Count];
 
 
                         toolStart.Image = Properties.Resources._1480398520_PauseNormalRed;
-                            controle[0] = true;
+                        controle[0] = true;
 
-                            //chamando método para carregar a classe com as informações dos arquivos
-                            setarInfoFile();
+                        //chamando método para carregar a classe com as informações dos arquivos
+                        setarInfoFile();
 
                         ////criando as capas de lote
                         //for (int i = 0; i < lsArq.Count; i++)
@@ -93,28 +185,20 @@ namespace MergeFilesPdf
 
 
 
-                        //string auxCapa = "";
-                        //////criando as capas de lote txt
+                        
+
+
+                        ////instânciando classe MesclarPdf
+                        //MesclarPdf mPdf = new MesclarPdf();
+
+                        ////adicionando os arquivos para mescla
                         //for (int i = 0; i < lsArq.Count; i++)
                         //{
-                        //    auxCapa = String.Format("Capa_{0}", infoArquivos[i].Name);
-                        //    auxCapa = auxCapa.Replace(".TXT", ".pdf").Replace(".txt", ".pdf");
-
-                        //    Pdf.CriaCapasdeLotePdf(auxCapa, lsArq[i].Pgs);
+                        //    mPdf.addArquivo(String.Format(lsArq[i].Nome));
+                        //    //mPdf.addArquivo(nomeCapas[i]);
                         //}
 
 
-                        //instânciando classe MesclarPdf
-                        MesclarPdf mPdf = new MesclarPdf();
-
-                        //adicionando os arquivos para mescla
-                        for (int i = 0; i < lsArq.Count; i++)
-                        {
-                            mPdf.addArquivo(String.Format(lsArq[i].Nome));
-                            //mPdf.addArquivo(nomeCapas[i]);
-                        }
-
-                        
                         //Pdf.limparListDeCapas();
 
                         //instânciando a variável time para inserir a data no arquivo gerado
@@ -122,11 +206,11 @@ namespace MergeFilesPdf
                         time = DateTime.Now;
 
                         //chamando método de mescla
-                        mPdf.MesclarArquivos(nomeArqMesclado = String.Format("MERGE-{0}.pdf", String.Format("{0:dd-MM-yyyy_HH.mm.ss}", time)));
+                        //mPdf.MesclarArquivos(nomeArqMesclado = String.Format("MERGE-{0}.pdf", String.Format("{0:dd-MM-yyyy_HH.mm.ss}", time)));
 
 
-                        Pdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos += String.Format("{0}.pdf", nomeArqMesclado), addInformacoesRelatorioArquivos(nomeArqMesclado));
-                        Pdf.CriarPdfApenasTexto(nomeArqRelatorioIntervaloPgs += String.Format("{0}.pdf", nomeArqMesclado), addInformacoesRelatorioIntervaloPgs(nomeArqMesclado));
+                        //Pdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos += String.Format("{0}.pdf", nomeArqMesclado), addInformacoesRelatorioArquivosPdf(nomeArqMesclado));
+                        //Pdf.CriarPdfApenasTexto(nomeArqRelatorioIntervaloPgs += String.Format("{0}.pdf", nomeArqMesclado), addInformacoesRelatorioIntervaloPgs(nomeArqMesclado));
 
 
                         toolProgressBar.Value = 100;
@@ -135,7 +219,6 @@ namespace MergeFilesPdf
                         toolStart.Image = Properties.Resources._1480398503_start;
                         MessageBox.Show("Todos os arquivos foram mesclados", "Operação realizada com sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-                        //}
                     }
 
                 }
@@ -156,7 +239,7 @@ namespace MergeFilesPdf
         /// </summary>
         /// <param name="nomeArquivoMesclado"></param>
         /// <returns></returns>
-        private string addInformacoesRelatorioArquivos(string nomeArquivoMesclado)
+        private string addInformacoesRelatorioArquivosPdf(string nomeArquivoMesclado)
         {
             string[] nomeArq;
             string InformacoesRelatorio = "";
@@ -175,6 +258,33 @@ namespace MergeFilesPdf
             }
 
             InformacoesRelatorio += String.Format("\n\nTOTAL = {0:00000}\n\n\n", Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(nomeArquivoMesclado) - (lsArq.Count * 2));
+            return InformacoesRelatorio;
+        }
+
+        /// <summary>
+        /// Adicionando informações necessárias para gerar Relatório de Arquivos 
+        /// </summary>
+        /// <param name="nomeArquivoMesclado"></param>
+        /// <returns></returns>
+        private string addInformacoesRelatorioArquivosTxt(List<Arquivo> ls)
+        {
+            string[] nomeArq;
+            string InformacoesRelatorio = "";
+
+            //cabeçalho do Relátorio de Arquivos 
+            InformacoesRelatorio+=String.Format("---------------------------------Arquivos------------------------------------\n");
+
+            //arquivos mesclados
+            for (int i = 0; i<ls.Count; i++)
+            {
+                nomeArq=ls[i].Nome.Split('\\');
+                InformacoesRelatorio += String.Format("Id: {0:00000}\n", ls[i].Id);
+                InformacoesRelatorio += String.Format("Nome Arquivo: {0}\n", nomeArq[nomeArq.Length-1]);
+                InformacoesRelatorio += String.Format("Qntd: {0}\n", ls[i].Pgs);
+                InformacoesRelatorio += "-----------------------------------------------------------------------------\n";
+            }
+
+            InformacoesRelatorio += String.Format("\n\nTOTAL = {0:00000}\n\n\n", details.Total);
             return InformacoesRelatorio;
         }
 
@@ -211,52 +321,6 @@ namespace MergeFilesPdf
                 infoArquivos.Add(new FileInfo(lsArq[i].Nome));
             }
         }
-        /// <summary>
-        /// Evento click do btnSelectFiles - responsável por pegar os arquivos e setar no listViewer
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void btnSelectFiles_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (opf.ShowDialog() == DialogResult.OK)
-        //        {
-        //            if (opf.FileNames.Length > 0)
-        //            {
-        //                if (controle[2] == false)
-        //                {
-        //                    criarListArquivos();
-        //                    controle[2] = true;
-        //                }
-
-        //                if (controle[4] == true && verificarDuplicidadeEndArq() == false)
-        //                {
-        //                    addItensList();
-        //                    lstViewerArquivos.Items.Clear();
-        //                    setarListViewcomArquivos();
-        //                }
-        //                else
-        //                {
-        //                    addItensList();
-        //                    lstViewerArquivos.Items.Clear();
-        //                    setarListViewcomArquivos();
-        //                    controle[4] = true;
-        //                }
-
-        //                setarListViewcomArquivos(definirTotalArquivos());
-        //                setarValoresTxtBox();
-                    
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Erro !", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-        //    return;
-        //}
 
         /// <summary>
         /// Método para garantir que não terá arquivos iguais
@@ -271,7 +335,6 @@ namespace MergeFilesPdf
                     if (lsArq[i].Nome.Equals(opf.FileNames[j]))
                         throw new Exception(String.Format("Arquivo já existente : {0} ", opf.FileNames[j]));
                 }
-
             }
 
             return true;
@@ -282,60 +345,42 @@ namespace MergeFilesPdf
         /// </summary>
         private void addItensList()
         {
-            //int[] pgs;
+            int[] pgs = new int[opf.FileNames.Length];
+            List<int> lsPgs = new List<int>(opf.FileNames.Length);
 
-            //    pgs = Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(opf.FileNames);
-            //else
-            //  pgs = ArqTexto.QntdArquivoTxt(opf.FileNames, lstbTxtLogica.SelectedIndex).ToArray<int>();
+            if (config[0] == '2')
+                pgs = Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(opf.FileNames);
+            else
+            {
+                string aux = config[2].ToString();
+                int aux2 = int.Parse(aux)-1;
+                lsPgs = ArqTexto.QntdArquivoTxt(opf.FileNames, aux2);
+                for (int i = 0; i < lsPgs.Count; i++)
+                {
+                    pgs[i] = lsPgs[i];
+                }
+            }
 
+            FileInfo[] nome = new FileInfo[opf.FileNames.Length];
 
+            for(int i = 0; i < opf.FileNames.Length; i++)
+                nome[i] = (new FileInfo(opf.FileNames[i]));
+            
 
             for (int i = 0; i < opf.FileNames.Length; i++)
             {
+
                 incrementarValorQntdArquivos();
 
                 lsArq.Add(new Arquivo
                 {
                     Id = qntArquivos,
-                    Nome = opf.FileNames[i],
-                    //Pgs = pgs[i]
+                    Nome = nome[i].Name,
+                    Pgs = pgs[i],
                 });
-
-
-                //for (int i = 0; i < opf.FileNames.Length; i++)
-                //{
-                //    incrementarValorQntdArquivos();
-
-                //    lsArq.Add(new Arquivo
-                //    {
-                //        Id = qntArquivos,
-                //        Nome = opf.FileNames[i],
-                //        Pgs = pgs
-                //    });
-                //}
-
             }
         }
-        /// <summary>
-        /// Método para mostrar os arquivos selecionados na txtBox
-        /// </summary>
-        private void setarValoresTxtBox()
-        {
-            txtBoxArquivosSelecionados.Text = "";
-
-            for (int i = 0; i < lsArq.Count(); i++)
-            {
-                txtBoxArquivosSelecionados.Text += (String.Format("Arquivo {0}: {1};", i + 1, lsArq[i].Nome));
-            }
-
-            if (txtBoxArquivosSelecionados.Text.Length > 1)
-            {
-                //retirando o ; do final da string
-                txtBoxArquivosSelecionados.Text = txtBoxArquivosSelecionados.Text.Remove(txtBoxArquivosSelecionados.Text.Length - 1);
-            }
-            return;
-        }
-
+       
         /// <summary>
         /// Método para incrementar +1 no valor da variável qntArquivos
         /// </summary>
@@ -363,19 +408,6 @@ namespace MergeFilesPdf
             return;
         }
 
-
-        private int definirTotalArquivos()
-        {
-            int total = 0;
-
-            for (int i = 0; i < lsArq.Count; i++)
-            {
-                total += lsArq[i].Pgs;
-            }
-            return total;
-        }
-
-
         /// <summary>
         /// Método para setar os dados do lsArquivos no ListViewer
         /// </summary>
@@ -384,91 +416,98 @@ namespace MergeFilesPdf
             //criando um array de propriedade da classe Arquivo
             var info = typeof(Arquivo).GetProperties();
 
+            int i = 0;
+            
             //Percorre lista de Arquivos
             foreach (Arquivo cliente in lsArq)
             {
-                //Adiciona um item em branco no listView
+                ////Adiciona um item em branco no listView
                 ListViewItem item = lstViewerArquivos.Items.Add("");
 
-                lstViewerArquivos.CheckBoxes = true;
-                item.Text = "";
-
-                foreach (PropertyInfo p in info)
+                foreach(PropertyInfo p in info)
                 {
-                    item.Checked = true;
-                    item.SubItems.Add(p.GetValue(cliente, null).ToString());
 
+                    if((p.Name !="Total"))
+                    {
+                        item.SubItems.Add(p.GetValue(cliente, null).ToString());
+                    }
+                    else
+                    if(p.Name == "Total" && i == 0)
+                    {
+                        item.SubItems.Add(p.GetValue(cliente, null).ToString());
+                        i++;
+                    }
+                    else
+                    {
+                        item.SubItems.Add("");
+                    }
                 }
             }
 
             return;
         }
 
-        private void setarListViewcomArquivos(int valorTotal)
-        {
-            Arquivo lsTotal = new Arquivo { Id = 999, Nome = "Total", Pgs = valorTotal };
-
-            //criando um array de propriedade da classe Arquivo
-            var info = typeof(Arquivo).GetProperties();
-                        
-            //Adiciona um item em branco no listView
-            ListViewItem item = lstViewerArquivos.Items.Add("");
-
-            lstViewerArquivos.CheckBoxes = true;
-            item.Text = "";
-
-            foreach (PropertyInfo p in info)
-            {
-                item.Checked = true;
-                item.SubItems.Add(p.GetValue(lsTotal, null).ToString());
-
-            }
-         
-            return;
-        }
         /// <summary>
         /// Método para criar as colunas do listViewer com base nos campos da classe Arquivo
         /// </summary>
-        private void criarColunasListView()
+        private void criarColunasListView(ListView ls, string classeTipo)
         {
-           
+
             //definindo a view do lisviewer com details, para mostrar o header
-            lstViewerArquivos.View = View.Details;
+            ls.View = View.Details;
 
             //criando um array de propriedade da classe Arquivo
-            var info = typeof(Arquivo).GetProperties();
+            Type t = Type.GetType(classeTipo);
 
+            var info = t.GetProperties();
             ColumnHeader col1 = new ColumnHeader();
             col1.Text = "";
-            col1.Width = 25;
+            col1.Width = 1;
 
-            foreach (var item in info)
+            if(!(controle[1]))
+            {
+                col1.Text = "";
+                controle[1] = true;
+                ls.Columns.Add(col1);
+            }
+
+            foreach(var item in info)
             {
                 //criando nova coluna
                 ColumnHeader col = new ColumnHeader();
 
-                if (!(controle[1]))
-                {
-                    controle[1] = true;
-                    lstViewerArquivos.Columns.Add(col1);
-                }
-
                 col.Text = item.Name;
 
-                if (col.Text.Equals("Id") || col.Text.Equals("Pgs"))
+                if(col.Text.Equals("Id") || col.Text.Equals("Pgs"))
                 {
                     col.TextAlign = HorizontalAlignment.Center;
-                    col.Width = -2;
+                    col.Width = 35;
                 }
-                else
+                else if(col.Text.Equals("Nome"))
                 {
-                    col.Width = 630;
+                    col.Width = 600;
                     col.TextAlign = HorizontalAlignment.Left;
                 }
-
+                else if((col.Text.Equals("Total"))|| (col.Text.Equals("Count")))
+                {
+                    col.Width = 60;
+                    col.TextAlign = HorizontalAlignment.Center;
+                }
+                else if(col.Text.Equals("Tipo"))
+                {
+                    col.Width = 80;
+                    col.TextAlign = HorizontalAlignment.Left;
+                }
+                else if(col.Text.Equals("Logica"))
+                {
+                    col.Width = 150;
+                    col.TextAlign = HorizontalAlignment.Left;
+                }
+                
                 //adicionando a coluna no listviewer
-                lstViewerArquivos.Columns.Add(col);
+                ls.Columns.Add(col);
             }
+
             return;
         }
 
@@ -488,7 +527,6 @@ namespace MergeFilesPdf
                     lstViewerArquivos.Items.Clear();
                     setarListViewcomArquivos();
                     lstViewerArquivos.Refresh();
-                    setarValoresTxtBox();
                 }
             }
         }
@@ -549,48 +587,49 @@ namespace MergeFilesPdf
             }
 
             lsExclusao.Clear();
-
             return;
         }
 
-        private void abrirToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void MenuConfig_Click(object sender, EventArgs e)
         {
-
             FrOpcoes frOpcoes = new FrOpcoes();
             frOpcoes.ShowDialog();
         }
 
-        private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menuAbrirArq_Click(object sender, EventArgs e)
         {
             try
             {
-                if (opf.ShowDialog() == DialogResult.OK)
+                if (Configuracao.verificarArqConfig())
                 {
-                    if (opf.FileNames.Length > 0)
+                    definirConfigForm();
+
+                    if (opf.ShowDialog() == DialogResult.OK)
                     {
-                        if (controle[2] == false)
+                        if (opf.FileNames.Length > 0)
                         {
-                            criarListArquivos();
-                            controle[2] = true;
-                        }
+                            if (controle[2] == false)
+                            {
+                                criarListArquivos();
+                                controle[2] = true;
+                            }
 
-                        if (controle[4] == true && verificarDuplicidadeEndArq() == false)
-                        {
-                            addItensList();
-                            lstViewerArquivos.Items.Clear();
-                            setarListViewcomArquivos();
+                            if (controle[4] == true && verificarDuplicidadeEndArq() == false)
+                            {
+                                addItensList();
+                                addDetalhes(lsArq, config);
+                                lstViewerArquivos.Items.Clear();
+                                setarListViewcomArquivos();
+                            }
+                            else
+                            {
+                                addItensList();
+                                lstViewerArquivos.Items.Clear();
+                                addDetalhes(lsArq, config);
+                                setarListViewcomArquivos();
+                                controle[4] = true;
+                            }
                         }
-                        else
-                        {
-                            addItensList();
-                            lstViewerArquivos.Items.Clear();
-                            setarListViewcomArquivos();
-                            controle[4] = true;
-                        }
-
-                        setarListViewcomArquivos(definirTotalArquivos());
-                        setarValoresTxtBox();
-
                     }
                 }
             }
@@ -600,6 +639,43 @@ namespace MergeFilesPdf
             }
         }
 
+
+        private void addDetalhes(List<Arquivo> lsArq, string config)
+        {
+            string auxTipo = "", auxLogica = "", auxGeracao = "";
+
+            //usando uma variavel aux para pegar os dados que foram configurados pelo o usuario
+            if(config[0] == '1')
+            { 
+                auxTipo = Configuracao.txtTipo[(int)char.GetNumericValue(config[0])];
+                auxGeracao = Configuracao.txtGeracaoConfigTexto[(int)char.GetNumericValue(config[1])];
+                auxLogica = Configuracao.txtLogicaArqTxt[(int)char.GetNumericValue(config[2])];
+            }
+            else
+            {
+                auxTipo = Configuracao.txtTipo[(int)char.GetNumericValue(config[0])];
+                auxGeracao = Configuracao.txtGeracaoConfigPdf[(int)char.GetNumericValue(config[1])];
+                auxLogica = Configuracao.txtLogicaArqPdf[(int)char.GetNumericValue(config[2])];
+            }
+
+            //instância um object que conterá os detalhes, onde ficara no lstViewerDetalhes
+            details = new Detalhe()
+            {
+                Count = lsArq.Count,
+                Tipo = auxTipo,
+                Total = lsArq.Sum(x => x.Pgs),
+                Logica = auxLogica,
+                Geracao = auxGeracao
+            };
+
+            Debug.WriteLine("Count -- {0}\nTipo -- {1}\nTotal -- {2}\nLogica -- {3}\nGeração -- {4}",
+                                details.Count,
+                                details.Tipo,
+                                details.Total,
+                                details.Logica,
+                                details.Geracao
+                            );
+        }
 
 
 

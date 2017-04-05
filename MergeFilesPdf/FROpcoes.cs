@@ -8,57 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
+using System.Diagnostics;
 
 namespace MergeFilesPdf
 {
     public partial class FrOpcoes : Form
     {
         #region Variáveis Privadas
-        private string[] txtTipo = new string[] {
-            "Selecione uma opção:",
-            "1 - Arquivo de Texto (.txt)",
-            "2 - Arquivo de Documento (.pdf)"
-        };
-
-        private string[] txtGeracaoConfigPdf = new string[] {
-            "Selecione uma opção:",
-            "1 - Apenas Capas",
-            "2 - Apenas Mesclar Arquivos",
-            "3 - Capas e Mesclar",
-            "4 - Capas, Mesclar e Relatório de Intervalo de pgs",
-            "5 - Capas, Mesclar e Relatório com qntd dos Arquivos",
-            "6 - Capas, Mesclar e Todos os Relatórios ",
-            "7 - Mesclar e Relatório de Intervalo de pgs",
-            "8 - Mesclar e Relatório com Qntd dos Arquivos",
-            "9 - Mesclar e Todos os Relatórios "
-        };
-
-
-        private string[] txtGeracaoConfigTexto = new string[] {
-            "Selecione uma opção:",
-            "1 - Capas",
-            "2 - Capas e Relatório com qntd dos Arquivos ",
-            "3 - Relatório com Qntd dos Arquivos"
-        };
-
-
-        private string[] txtLogicaArqTxt = new string[] {
-            "Selecione uma opção:",
-            "1 Registro - 1 linha",
-            "1 Registro - 2 linhas",
-            "1 Regsitro - 3 linhas",
-            "1 Registro - 4 linhas",
-            "1 Registro - 5 linhas",
-            "Desconsiderar 1 linha",
-            "Prefeitura de Brusque - contas de água"
-        };
-
-        private string[] txtLogicaArqPdf = new string[] {
-            "Selecione uma opção:",
-            "Simplex",
-            "Duplex"
-        };
-
         public int[] txtResultListBox;
 
 #endregion
@@ -66,9 +23,16 @@ namespace MergeFilesPdf
         public FrOpcoes()
         {
             InitializeComponent();
+            limparButtons();
+            limparArqConfig();
+            setarListBox(lsTipoArquivo, Configuracao.txtTipo);
+            
+        }
 
-            //setarListBoxTipo(txtTipo);    
-            setarListBox(lsTipoArquivo, txtTipo);
+        private void limparButtons()
+        {
+            btnOk.Enabled = false;
+            btnAplicar.Enabled = false;
         }
 
         /// <summary>
@@ -78,17 +42,20 @@ namespace MergeFilesPdf
         /// <param name="e"></param>
         private void lsTipoArquivo_SelectedIndexChanged(object sender, EventArgs e)
         {
+            btnLimpar.Enabled = true;
+
             if(lsTipoArquivo.SelectedIndex == 1)
             {
-                setarListBox(lstGeracao, txtGeracaoConfigTexto);
-                setarListBox(lstBoxLogica, txtLogicaArqTxt);
+                setarListBox(lstGeracao, Configuracao.txtGeracaoConfigTexto);
+                setarListBox(lstBoxLogica, Configuracao.txtLogicaArqTxt);
 
             }
             else if (lsTipoArquivo.SelectedIndex == 2)
             {
-                setarListBox(lstGeracao, txtGeracaoConfigPdf);
-                setarListBox(lstBoxLogica, txtLogicaArqPdf);
+                setarListBox(lstGeracao, Configuracao.txtGeracaoConfigPdf);
+                setarListBox(lstBoxLogica, Configuracao.txtLogicaArqPdf);
             }
+            verificaListBoxes();
         }
 
         /// <summary>
@@ -97,21 +64,39 @@ namespace MergeFilesPdf
         /// <param name="txt"></param>
         private void setarListBox(ListBox list, string[] txt)
         {
-            list.DataSource = txt;
+            list.DataSource = txt;   
             return;
         }
 
         /// <summary>
+        /// Método para limpar o arquivo de configuração
+        /// </summary>
+        private void limparArqConfig()
+        {
+            //limpando arquivo de configuração
+            try
+            {
+                using (StreamWriter stw = new StreamWriter(Configuracao.txtConfig, false, Encoding.Default))
+                { 
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
+
+        }
+        /// <summary>
         /// Método para verificar se todos os listBoxes foram selecionados
         /// </summary>
         /// <returns></returns>
-        private bool verificaListBoxes()
+        private void verificaListBoxes()
         {
-            if (lsTipoArquivo.SelectedIndex == 0 || lstBoxLogica.SelectedIndex == 0 || lstGeracao.SelectedIndex == 0)
-                return false;
-            else
-                return true;
+            if ((lsTipoArquivo.SelectedIndex != 0) && (lstBoxLogica.SelectedIndex != 0) && (lstGeracao.SelectedIndex != 0))
+                btnAplicar.Enabled = true;
         }
+
 
         /// <summary>
         ///Método para limpar componentes 
@@ -133,7 +118,7 @@ namespace MergeFilesPdf
             else
                 lstGeracao.ClearSelected();
 
-
+            limparButtons();
         }
 
         /// <summary>
@@ -143,8 +128,7 @@ namespace MergeFilesPdf
         /// <param name="e"></param>
         private void btnIniciar_Click(object sender, EventArgs e)
         {
-            if (verificaListBoxes())
-            {
+            
                 //instânciando resultados
                 txtResultListBox = new int[]
                 {
@@ -153,11 +137,49 @@ namespace MergeFilesPdf
                     lstBoxLogica.SelectedIndex
                 };
 
-                //passando resultados
-                DialogResult = DialogResult.OK;
+                btnAplicar.Enabled = false;
+                btnOk.Enabled = true;
+            
+            //else
+            //    MessageBox.Show("É obrigatório a seleção de todos os campos.", "Verifique todos o campos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Método para criar Arquivo de configuração
+        /// </summary>
+        private void criarArquivoConfig()
+        {            
+            try
+            {                
+                using (StreamWriter stw = new StreamWriter(Configuracao.txtConfig, false, Encoding.Default))
+                {
+                    for (int i = 0; i < txtResultListBox.Length; i++)
+                    {
+                        stw.Write(txtResultListBox[i]);
+                    }
+                }
             }
-            else
-                MessageBox.Show("É obrigatório a seleção de todos os campos.", "Verifique todos o campos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
+        }
+
+        private void lstGeracao_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            verificaListBoxes();
+        }
+
+        private void lstBoxLogica_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            verificaListBoxes();
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            criarArquivoConfig();
+            this.Close();
         }
     }
 }
