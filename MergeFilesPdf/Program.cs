@@ -16,10 +16,7 @@ namespace MergeFilesPdf
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
             Application.Run(new FRPrincipal());
-            //if (frOpcoes.ShowDialog() == DialogResult.OK)
-                //Application.Run(new FRPrincipal(frOpcoes.txtResultListBox));
             
         }
     }

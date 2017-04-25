@@ -55,13 +55,13 @@
             this.tstProgresso.Location = new System.Drawing.Point(0, 550);
             this.tstProgresso.Name = "tstProgresso";
             this.tstProgresso.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.tstProgresso.Size = new System.Drawing.Size(756, 25);
+            this.tstProgresso.Size = new System.Drawing.Size(956, 25);
             this.tstProgresso.TabIndex = 0;
             // 
             // toolProgressBar
             // 
             this.toolProgressBar.Name = "toolProgressBar";
-            this.toolProgressBar.Size = new System.Drawing.Size(681, 22);
+            this.toolProgressBar.Size = new System.Drawing.Size(897, 22);
             // 
             // toolStripSeparator2
             // 
@@ -91,9 +91,9 @@
             // lstViewerArquivos
             // 
             this.lstViewerArquivos.FullRowSelect = true;
-            this.lstViewerArquivos.Location = new System.Drawing.Point(9, 43);
+            this.lstViewerArquivos.Location = new System.Drawing.Point(9, 45);
             this.lstViewerArquivos.Name = "lstViewerArquivos";
-            this.lstViewerArquivos.Size = new System.Drawing.Size(740, 430);
+            this.lstViewerArquivos.Size = new System.Drawing.Size(935, 430);
             this.lstViewerArquivos.TabIndex = 3;
             this.lstViewerArquivos.UseCompatibleStateImageBehavior = false;
             this.lstViewerArquivos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsArquivos_KeyDown);
@@ -107,7 +107,7 @@
             this.menuFrm.Location = new System.Drawing.Point(0, 0);
             this.menuFrm.Name = "menuFrm";
             this.menuFrm.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuFrm.Size = new System.Drawing.Size(756, 24);
+            this.menuFrm.Size = new System.Drawing.Size(956, 24);
             this.menuFrm.TabIndex = 14;
             // 
             // menuArquivo
@@ -143,9 +143,9 @@
             // lstViewerDetalhes
             // 
             this.lstViewerDetalhes.FullRowSelect = true;
-            this.lstViewerDetalhes.Location = new System.Drawing.Point(9, 488);
+            this.lstViewerDetalhes.Location = new System.Drawing.Point(9, 484);
             this.lstViewerDetalhes.Name = "lstViewerDetalhes";
-            this.lstViewerDetalhes.Size = new System.Drawing.Size(740, 59);
+            this.lstViewerDetalhes.Size = new System.Drawing.Size(935, 59);
             this.lstViewerDetalhes.TabIndex = 15;
             this.lstViewerDetalhes.UseCompatibleStateImageBehavior = false;
             // 
@@ -154,7 +154,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(78)))), ((int)(((byte)(102)))));
-            this.ClientSize = new System.Drawing.Size(756, 575);
+            this.ClientSize = new System.Drawing.Size(956, 575);
             this.Controls.Add(this.lstViewerDetalhes);
             this.Controls.Add(this.lstViewerArquivos);
             this.Controls.Add(this.tstProgresso);

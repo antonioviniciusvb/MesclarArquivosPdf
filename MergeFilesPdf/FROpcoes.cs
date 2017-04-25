@@ -24,11 +24,18 @@ namespace MergeFilesPdf
         {
             InitializeComponent();
             limparButtons();
-            limparArqConfig();
+            Configuracao.DeletarArqConfig();
             setarListBox(lsTipoArquivo, Configuracao.txtTipo);
-            
         }
 
+        public FrOpcoes(int tipo)
+        {
+            InitializeComponent();
+            limparButtons();
+        }
+        /// <summary>
+        /// Método para limpar os buttons
+        /// </summary>
         private void limparButtons()
         {
             btnOk.Enabled = false;
@@ -69,32 +76,15 @@ namespace MergeFilesPdf
         }
 
         /// <summary>
-        /// Método para limpar o arquivo de configuração
-        /// </summary>
-        private void limparArqConfig()
-        {
-            //limpando arquivo de configuração
-            try
-            {
-                using (StreamWriter stw = new StreamWriter(Configuracao.txtConfig, false, Encoding.Default))
-                { 
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw;
-            }
-
-        }
-        /// <summary>
         /// Método para verificar se todos os listBoxes foram selecionados
         /// </summary>
         /// <returns></returns>
         private void verificaListBoxes()
         {
-            if ((lsTipoArquivo.SelectedIndex != 0) && (lstBoxLogica.SelectedIndex != 0) && (lstGeracao.SelectedIndex != 0))
+            if((lsTipoArquivo.SelectedIndex != 0) && (lstBoxLogica.SelectedIndex != 0) && (lstGeracao.SelectedIndex != 0))
                 btnAplicar.Enabled = true;
+            else
+                btnAplicar.Enabled = false;
         }
 
 
@@ -128,7 +118,6 @@ namespace MergeFilesPdf
         /// <param name="e"></param>
         private void btnIniciar_Click(object sender, EventArgs e)
         {
-            
                 //instânciando resultados
                 txtResultListBox = new int[]
                 {
@@ -139,32 +128,9 @@ namespace MergeFilesPdf
 
                 btnAplicar.Enabled = false;
                 btnOk.Enabled = true;
-            
-            //else
-            //    MessageBox.Show("É obrigatório a seleção de todos os campos.", "Verifique todos o campos", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        /// <summary>
-        /// Método para criar Arquivo de configuração
-        /// </summary>
-        private void criarArquivoConfig()
-        {            
-            try
-            {                
-                using (StreamWriter stw = new StreamWriter(Configuracao.txtConfig, false, Encoding.Default))
-                {
-                    for (int i = 0; i < txtResultListBox.Length; i++)
-                    {
-                        stw.Write(txtResultListBox[i]);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw;
-            }
-        }
+       
 
         private void lstGeracao_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -176,9 +142,14 @@ namespace MergeFilesPdf
             verificaListBoxes();
         }
 
+        /// <summary>
+        /// Evento parar o arquivo de criação
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnOk_Click(object sender, EventArgs e)
         {
-            criarArquivoConfig();
+            Configuracao.CriarArquivoConfig(txtResultListBox);
             this.Close();
         }
     }
