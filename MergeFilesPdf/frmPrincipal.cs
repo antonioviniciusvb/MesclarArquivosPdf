@@ -359,26 +359,55 @@ namespace MergeFilesPdf
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MenuConfig_Click(object sender, EventArgs e)
-        {
-            FrOpcoes frOpcoes;
+        { 
 
             //instânciando form e iniciando
             if(controle[5] == false || (!File.Exists(Configuracao.txtConfig)))
             {
-                frOpcoes = new FrOpcoes();
+                new FrOpcoes().ShowDialog();          
                 controle[5] = true;
-                frOpcoes.ShowDialog();
             }
             else
             {
-                SystemSounds.Beep.Play();
-                Alert al = new Alert();
-                al.ShowDialog();
-               
-                
+                if(Configuracao.MsgmAlertConfig(config = Configuracao.LerArqConfig()))
+                {
+                    int temp = lsArq.Count;
+
+                    //limpando
+                    clear();
+                    
+                    //enviando msgm de sucesso no processo
+                    MessageBox.Show($"{temp} - arquivos excluídos", "Processo efetuado com sucesso!", MessageBoxButtons.OK,MessageBoxIcon.Information);
+
+                    //instânciando objct e exibindo form de opções
+                    new FrOpcoes().ShowDialog();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Método paralimpar os objetos dados que são utilizados nos ListViewers
+        /// </summary>
+        private void clear()
+        {
+            //limpando os objetos com os dados
+            if(lsArq != null || details != null)
+            {
+                details.ClearFields();
+                lsArq.Clear();
             }
             
+            //limpando campo de qntdArquivos
+            qntArquivos = 0;
+            
+            //limpeza e atualização dos listviewers 
+            lstViewerArquivos.Items.Clear();
+            lstViewerDetalhes.Items.Clear();
+            lstViewerDetalhes.Refresh();
+            lstViewerArquivos.Refresh();
         }
+
+
         #endregion
 
         #region OpenFileDialog -- para selecionar os arquivos

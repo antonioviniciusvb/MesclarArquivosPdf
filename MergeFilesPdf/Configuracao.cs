@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace MergeFilesPdf
 {
@@ -83,7 +84,54 @@ namespace MergeFilesPdf
                     throw new Exception("Configurações não definidas.");
             }
             else
-                throw new Exception("Arquivo de configuração (config.txt) não foi encontrado.");
+                throw new Exception("Arquivo de configuração \"config.txt\" não foi encontrado.\nVá em configurações e defina as opções para continuar.");
+        }
+
+        /// <summary>
+        ///Método que irá mostrar as configurações anteriores e avisar que se haver algum arquivo selecionado serão apagados do List, return true caso o usuário aceite 
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static  bool MsgmAlertConfig(string config)
+        {
+            //config[0]== "1" --- arquivo .txt
+            //config[0]== "2" --- arquivo .pdf
+            if(config[0] == '1')
+            {
+                if(
+                    MessageBox.Show($"Configurações Anteriores:" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nLógica:\n{Configuracao.txtLogicaArqTxt[(int)char.GetNumericValue(config[2])]}" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nArquivos:\n{Configuracao.txtTipo[1]}" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nGeração:\n{Configuracao.txtGeracaoConfigTexto[(int)char.GetNumericValue(config[1])]}" +
+                    $"\n-----------------------------------------------------------" +
+                    "\n\n\nOs arquivos selecionados serão apagados - **caso existam**." +
+                    "\nDeseja continuar?", "Atenção!",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                { return true; }
+
+            }
+            else
+            if(config[0] == '2')
+            {
+                if(
+                    MessageBox.Show($"Configurações Anteriores:" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nLógica:\n{Configuracao.txtLogicaArqPdf[(int)char.GetNumericValue(config[2])]}" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nArquivos:\n{Configuracao.txtTipo[2]}" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nGeração:\n{Configuracao.txtGeracaoConfigPdf[(int)char.GetNumericValue(config[1])]}" +
+                    $"\n-----------------------------------------------------------" +
+                    "\n\n\nOs arquivos selecioandos serão apagados - **caso existam**" +
+                    "\nDeseja continuar?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                { return true; }
+            }
+
+            //if não retorne true em nenhum dos 2 if, significa que a respostas foi não, assim retornando false
+            return false;
         }
 
 
