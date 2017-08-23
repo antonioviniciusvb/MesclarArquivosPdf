@@ -5,7 +5,7 @@ namespace MergeFilesPdf
     public class Arquivo
     {
         public int Id { get; set; }
-        public string Nome { get; set; }
+        public string Name { get; set; }
         public int Pgs { get; set; }
     }
 }

@@ -134,33 +134,42 @@ namespace MergeFilesPdf
             return false;
         }
 
-
-
+        #region Dados de configurações de Tipo -- config[0] 
+        // ------------------------------- 1 -------------------------------------
         public  static string[] txtTipo = new string[] {
             "Selecione uma opção:",
             "1 - Arquivo de Texto (.txt)",
             "2 - Arquivo de Documento (.pdf)"
         };
+        #endregion
 
+        #region Dados de Configurações de Txt --- config[1]
+        // ------------------------------- 2 -------------------------------------
         public static string[] txtGeracaoConfigTexto = new string[] {
             "Selecione uma opção:",
             "1 - Apenas Capas",
             "2 - Capas e Relatório com qntd dos Arquivos ",
             "3 - Apenas Relatório com Qntd dos Arquivos"
         };
+                #region config[2]
+                // ------------------------------- 3 -------------------------------------
+                public static string[] txtLogicaArqTxt = new string[] {
+                    "Selecione uma opção:",
+                    "1 Registro - 1 linha",
+                    "1 Registro - 2 linhas",
+                    "1 Regsitro - 3 linhas",
+                    "1 Registro - 4 linhas",
+                    "1 Registro - 5 linhas",
+                    "Desconsiderar 1 linha",
+                    "Prefeitura de Brusque - contas de água"
+                };
+                #endregion
 
+        #endregion
 
-        public static string[] txtLogicaArqTxt = new string[] {
-            "Selecione uma opção:",
-            "1 Registro - 1 linha",
-            "1 Registro - 2 linhas",
-            "1 Regsitro - 3 linhas",
-            "1 Registro - 4 linhas",
-            "1 Registro - 5 linhas",
-            "Desconsiderar 1 linha",
-            "Prefeitura de Brusque - contas de água"
-        };
+        #region Dados de Configurações de PDF - - config[1]
 
+        // ------------------------------- 2 -------------------------------------
         public static string[] txtGeracaoConfigPdf = new string[] {
             "Selecione uma opção:",
             "1 - Apenas Capas",
@@ -175,12 +184,16 @@ namespace MergeFilesPdf
         };
 
 
+                #region config[2]
+                // ------------------------------- 3 -------------------------------------
+                public static string[] txtLogicaArqPdf = new string[] {
+                    "Selecione uma opção:",
+                    "Simplex",
+                    "Duplex"
+                };
+                #endregion
 
-        public static string[] txtLogicaArqPdf = new string[] {
-            "Selecione uma opção:",
-            "Simplex",
-            "Duplex"
-        };
+        #endregion
 
     }
 }

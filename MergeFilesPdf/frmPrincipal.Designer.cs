@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FRPrincipal));
             this.tstProgresso = new System.Windows.Forms.ToolStrip();
-            this.toolProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStart = new System.Windows.Forms.ToolStripButton();
             this.opf = new System.Windows.Forms.OpenFileDialog();
@@ -49,7 +49,7 @@
             // 
             this.tstProgresso.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tstProgresso.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolProgressBar,
+            this.ProgressBar,
             this.toolStripSeparator2,
             this.toolStart});
             this.tstProgresso.Location = new System.Drawing.Point(0, 550);
@@ -58,10 +58,10 @@
             this.tstProgresso.Size = new System.Drawing.Size(956, 25);
             this.tstProgresso.TabIndex = 0;
             // 
-            // toolProgressBar
+            // ProgressBar
             // 
-            this.toolProgressBar.Name = "toolProgressBar";
-            this.toolProgressBar.Size = new System.Drawing.Size(897, 22);
+            this.ProgressBar.Name = "ProgressBar";
+            this.ProgressBar.Size = new System.Drawing.Size(897, 22);
             // 
             // toolStripSeparator2
             // 
@@ -179,7 +179,7 @@
 
         private System.Windows.Forms.ToolStrip tstProgresso;
         private System.Windows.Forms.ToolStripButton toolStart;
-        private System.Windows.Forms.ToolStripProgressBar toolProgressBar;
+        private System.Windows.Forms.ToolStripProgressBar ProgressBar;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.OpenFileDialog opf;
         private System.Windows.Forms.ListView lstViewerArquivos;
