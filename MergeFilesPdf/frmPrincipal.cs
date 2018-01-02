@@ -18,6 +18,7 @@ namespace MergeFilesPdf
 {
     public partial class FRPrincipal : Form
     {
+        #region Objetos da Classe
         //object privado de controle
         private IndexadorInteiros controle;
 
@@ -36,15 +37,13 @@ namespace MergeFilesPdf
 
         //List que carregará os arquivos
         private List<Arquivo> lsArq, lsExclusao;
-       
-
-
+ 
         private Detalhe details;
-        
 
         private int qntArquivos;
-       
-        #region ------------ 1 - Passos do Construtor FRPrincipal --------------
+        #endregion
+
+        #region ------------ Construtor FRPrincipal --------------
         public FRPrincipal()
         {
             InitializeComponent();
@@ -144,8 +143,9 @@ namespace MergeFilesPdf
 
             return;
         }
-#endregion
+        #endregion
 
+        #region Definição Open File Dialog
         /// <summary>
         /// Método para definir o filtro do objeto OpenFileDialog, entre arquivos .Pdf ou .tx
         /// </summary>
@@ -158,7 +158,7 @@ namespace MergeFilesPdf
                 opf.Filter = "Arquivos Pdf|*.pdf";
         }
 
-
+        #endregion
 
         #region ------------------- Métodos de Eventos --------------------
 
@@ -206,6 +206,7 @@ namespace MergeFilesPdf
 
             try
             {
+                ProgressBar.Value = 0;
                 string nomeArqRelatorioArquivos = string.Empty;
 
                 if(!(controle[0]))
@@ -216,7 +217,7 @@ namespace MergeFilesPdf
 
                         switch(config[0])
                         {
-
+                            #region case1
                             //************** Entrada para Funções de txt *******************
                             case '1':
 
@@ -254,13 +255,15 @@ namespace MergeFilesPdf
                                         break;
                                 }
                                 break;
-
+                            #endregion
+                            #region case2
                             //***************************** Entrada para Funções de pdf ******************************
                             case '2':
 
                                 //switch na lógica 
                                 switch(config[2])
                                 {
+                                    #region simplex
                                     //entrada de folhas simplex
                                     case '1':
                                         switch(config[1])
@@ -433,11 +436,16 @@ namespace MergeFilesPdf
                                         }
 
                                         break;
+                                    #endregion
+                                    #region duplex
 
                                     case '2':
                                         switch(config[1])
                                         {
                                             case '1':
+                                                //criando capas de lote
+                                                for (int i = 0; i < lsArq.Count; i++)
+                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "simplex");
                                                 break;
                                             case '2':
                                                 break;
@@ -483,6 +491,31 @@ namespace MergeFilesPdf
                                         break;
                                 }
                                 break;
+                            #endregion
+                            #endregion
+                            #region case3
+                            case '3':
+
+                                string[] camposConfig = config.Split(';');
+                                
+                                //Split
+                                for (int i = 0; i < lsArq.Count; i++)
+                                    Vnsdll.SplitPdf.QuebrarArquivos(lsArq[i].Name, lsArq[i].Pgs, int.Parse(camposConfig[2]),
+                                        int.Parse(camposConfig[3]), int.Parse(camposConfig[4]), int.Parse(camposConfig[5]));
+
+                                //Gerar Relatorio csv
+                                if(camposConfig[1] == "1")
+                                {
+                                    Vnsdll.RelatorioCSV relatorio = new RelatorioCSV($"{Vnsdll.SplitPdf.Directory}\\Relatorio_{details.Total}.txt");
+                                    relatorio.addDados($"ID;NOME;QNT");
+
+                                    for (int i = 0; i < lsArq.Count; i++)
+                                        relatorio.addDados($"{lsArq[i].Id};{lsArq[i].Name};{lsArq[i].Pgs}");
+
+                                    relatorio.criaArquivo();
+                                }                               
+                                break;
+                                #endregion
                         }
                         #endregion                     
 
@@ -501,7 +534,7 @@ namespace MergeFilesPdf
 
                         toolStart.Image = Properties.Resources._1480398503_start;
                         MessageBox.Show("Todos os arquivos foram mesclados", "Operação realizada com sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
+                        toolStart.Image = Properties.Resources._1480398520_PauseNormalRed;
                     }
 
                 }
@@ -614,6 +647,7 @@ namespace MergeFilesPdf
                             FileInfo fi = new FileInfo(opf.FileName);
                             CapasPdf.Directory = fi.Directory.ToString();
                             Vnsdll.MesclarPdf.Directory = fi.Directory.ToString();
+                            Vnsdll.SplitPdf.Directory = fi.Directory.ToString();
 
                            
                             //só executará uma vez
@@ -663,11 +697,11 @@ namespace MergeFilesPdf
                 MessageBox.Show(ex.Message, "Erro !", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        #endregion  
+        #endregion
 
         #endregion
 
-
+        #region ------------------- Métodos de UI -------------------------
         /// <summary>
         /// Adicionando informações necessárias para gerar Relatório de Arquivos 
         /// </summary>
@@ -746,19 +780,19 @@ namespace MergeFilesPdf
                 }
                 else if(capas == 1) //gerar informações com base em capas duplex
                 {
-                    infoRelatorioPgs += $"                              Id:{lsArq[i].Id:00000} -- {contPgs} até {contPgs += lsArq[i].Pgs + 1 }\n";
+                    infoRelatorioPgs += $"                              Id:{lsArq[i].Id:00000} -- {contPgs} até {contPgs += lsArq[i].Pgs*2 + 1 }\n";
                     contPgs++;
                 }
                 else //gerar informações desconsiderando a existência de capas
                 {
                     if(i == 0)
                     {
-                        infoRelatorioPgs += $"                              Id:{lsArq[i].Id:00000} -- {contPgs} até {lsArq[i].Pgs}\n";
+                        infoRelatorioPgs += $"                              Id:{lsArq[i].Id:00000} -- {contPgs} até {lsArq[i].Pgs*2}\n";
                     }
                     else
                     {
-                        contPgs += lsArq[i].Pgs;
-                        infoRelatorioPgs += $"                              Id:{lsArq[i].Id:00000} -- {contPgs} até {lsArq[i].Pgs + contPgs}\n";
+                        contPgs += lsArq[i].Pgs*2;
+                        infoRelatorioPgs += $"                              Id:{lsArq[i].Id:00000} -- {contPgs} até {lsArq[i].Pgs*2 + contPgs}\n";
                     }
                 }
             }
@@ -775,9 +809,7 @@ namespace MergeFilesPdf
             {
                
                 infoArquivos.Add(new FileInfo(lsArq[i].Name));
-            }
-
-            
+            }            
         }
 
         /// <summary>
@@ -805,14 +837,23 @@ namespace MergeFilesPdf
         {
             int[] pgs = new int[opf.FileNames.Length];
             List<int> lsPgs = new List<int>(opf.FileNames.Length);
-            
-            if (config[0] == '2') //entra aqui, caso a opção de processo escolhida for arquivos .pdf
+
+            if ((config[0] == '2') && (config[2] == '1'))//entra aqui, caso a opção de processo escolhida for arquivos .pdf
                 pgs = Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(opf.FileNames);
+            else
+            if ((config[0] == '2') && (config[2] == '2') || (config[0] == '3'))
+            {
+                pgs = Vnsdll.Pdf.ExtrairNumPgsArquivoPdf(opf.FileNames);
+                for (int i = 0; i < pgs.Length; i++)
+                {
+                    pgs[i] = pgs[i] / 2;
+                }
+            }
             else //senão entrará aqui... Correspondente ao Arquivo .Txt
             {
                 //variaveis para saber a lógica que será adotada
                 string aux = config[2].ToString();
-                int aux2 = int.Parse(aux)-1;
+                int aux2 = int.Parse(aux) - 1;
 
                 //capturando a qntd de registros para cada arquivo .txt selecionado
                 lsPgs = ArqTexto.QntdArquivoTxt(opf.FileNames, aux2);
@@ -1000,17 +1041,26 @@ namespace MergeFilesPdf
 
             //config[0] == 1 -- .txt
             //config[0] == 2 -- .pdf
-            if(config[0] == '1')
-            { 
+            //config[0] == 3 -- split
+            if (config[0] == '1')
+            {
                 auxTipo = Configuracao.txtTipo[(int)char.GetNumericValue(config[0])];
                 auxGeracao = Configuracao.txtGeracaoConfigTexto[(int)char.GetNumericValue(config[1])];
                 auxLogica = Configuracao.txtLogicaArqTxt[(int)char.GetNumericValue(config[2])];
             }
             else
+            if (config[0] == '2')
             {
                 auxTipo = Configuracao.txtTipo[(int)char.GetNumericValue(config[0])];
                 auxGeracao = Configuracao.txtGeracaoConfigPdf[(int)char.GetNumericValue(config[1])];
                 auxLogica = Configuracao.txtLogicaArqPdf[(int)char.GetNumericValue(config[2])];
+            }
+            else
+            if (config[0] == '3')
+            {
+                auxTipo = Configuracao.txtTipo[3];
+                auxGeracao = "Duplex";
+                auxLogica = "Arquivo PDF - Modo Split";
             }
 
             //instância um object que conterá os detalhes, onde ficara no lstViewerDetalhes
@@ -1026,368 +1076,18 @@ namespace MergeFilesPdf
         }
 
 
-
-        private void doWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            CancellationTokenSource cancellationSource = new CancellationTokenSource();
-            CancellationToken token = cancellationSource.Token;
-            
-            try
-            {
-                string nomeArqRelatorioArquivos = string.Empty;
-
-                if(!(controle[0]))
-                {
-                    if(verificaQntdListView())
-                    {
-                        #region Escolhas de Processamento
-
-                        switch(config[0])
-                        {
-                            
-                            //************** Entrada para Funções de txt *******************
-                            case '1':
-
-                                switch(config[1])
-                                {
-                                    //Opção - Apenas Capas .txt
-                                    case '1':
-                                            //geraCapas(lsArq, token, new Progress<ProgressObject>(updateProgress));
-                                            //CapasPdf.CriaCapasdeLoteArqTxt(lsArq[i].Name, lsArq[i].Pgs);
-                                            
-                                
-                                        break;
-
-                                    //Opção - Capas e Relatorios dos Arquivos .txt
-                                    case '2':
-                                        ////instânciando classe MesclarPdf
-                                        mPdf = new MesclarPdf();
-                                        nomeArqRelatorioArquivos = $"Relatorio_Total_{details.Total}";
-
-                                        //Gerar Capas e relatório qntd
-                                        for(int i = 0; i < lsArq.Count; i++)
-                                            CapasPdf.CriaCapasdeLoteArqTxt(lsArq[i].Name, lsArq[i].Pgs);
-
-                                        CapasPdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioArquivosTxt(lsArq));
-
-                                        //chamando método de mescla
-                                        mPdf.addArquivo(CapasPdf.getNomeCapas());
-                                        mPdf.MesclarArquivos($"Mescla_Arquivos_{details.Total}");
-
-                                        break;
-
-                                    case '3':
-                                        nomeArqRelatorioArquivos = $"Relatorio_Total_{details.Total}";
-                                        CapasPdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioArquivosTxt(lsArq));
-
-                                        // ************************* Fim *****************************
-                                        break;
-                                }
-                                break;
-
-                            //***************************** Entrada para Funções de pdf ******************************
-                            case '2':
-
-                                //switch na lógica 
-                                switch(config[2])
-                                {
-                                    //entrada de folhas simplex
-                                    case '1':
-                                        switch(config[1])
-                                        {
-                                            //Opção - Apenas Capas .pdf  
-                                            case '1':
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "simplex");
-                                                break;
-
-                                            //Opção - Apenas Mesclar Arquivos .pdf
-                                            case '2':
-
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-                                                //adicionando os arquivos para mescla
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    mPdf.addArquivo(lsArq[i].Name);
-
-                                                //Mesclando..
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-
-                                                break;
-
-                                            //Opção - Capas e Mesclar
-                                            case '3':
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "simplex");
-
-                                                capas = CapasPdf.getNomeCapas();
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                {
-                                                    mPdf.addArquivo(lsArq[i].Name);
-                                                    mPdf.addArquivo(capas[i]);
-                                                }
-
-                                                //Mesclando...
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-
-                                                break;
-
-                                            //Opção - Capas, Mesclar e Relatório de Intervalo de pgs
-                                            case '4':
-
-                                                nomeArqRelatorioArquivos = $"Relatorio_Intervalo_Pgs_{details.Total}";
-
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "simplex");
-
-                                                capas = CapasPdf.getNomeCapas();
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                {
-                                                    mPdf.addArquivo(lsArq[i].Name);
-                                                    mPdf.addArquivo(capas[i]);
-                                                }
-
-                                                //Mesclando...
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-
-                                                CapasPdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioIntervaloPgs(0));
-
-                                                break;
-
-                                            //Opção - Capas, Mesclar e Relatório com qntd dos Arquivos
-                                            case '5':
-
-                                                nomeArqRelatorioArquivos = $"Relatorio_Total_{details.Total}";
-
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "simplex");
-
-                                                capas = CapasPdf.getNomeCapas();
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                {
-                                                    mPdf.addArquivo(lsArq[i].Name);
-                                                    mPdf.addArquivo(capas[i]);
-                                                }
-
-                                                //Mesclando...
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-
-                                                CapasPdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioArquivosTxt(lsArq));
-                                                break;
-
-                                            //Opção - Capas, Mesclar e Todos os Relatórios
-                                            case '6':
-
-                                                nomeArqRelatorioArquivos = $"Relatorio_Intervalo_Pgs_{details.Total}";
-
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "simplex");
-
-                                                capas = CapasPdf.getNomeCapas();
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                {
-                                                    mPdf.addArquivo(lsArq[i].Name);
-                                                    mPdf.addArquivo(capas[i]);
-                                                }
-
-                                                //Mesclando...
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-
-                                                CapasPdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioIntervaloPgs(0));
-                                                CapasPdf.CriarPdfApenasTexto($"Relatorio_Qntd_Arquivos_Total_{details.Total}", addInformacoesRelatorioArquivosTxt(lsArq));
-                                                break;
-
-                                            //Opção - Mesclar e Relatório de Intervalo de pgs
-                                            case '7':
-
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-                                                //adicionando os arquivos para mescla
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    mPdf.addArquivo(lsArq[i].Name);
-
-                                                //Mesclando..
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-                                                CapasPdf.CriarPdfApenasTexto($"Relatorio_Intervalo_Pgs_Total_{details.Total}", addInformacoesRelatorioIntervaloPgs(0));
-
-                                                break;
-
-                                            //Opção - Mesclar e Relatório com Qntd dos Arquivos
-                                            case '8':
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-                                                //adicionando os arquivos para mescla
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    mPdf.addArquivo(lsArq[i].Name);
-
-                                                //Mesclando..
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-                                                CapasPdf.CriarPdfApenasTexto($"Relatorio_Qntd_Arquivos_Total_{details.Total}", addInformacoesRelatorioArquivosTxt(lsArq));
-                                                break;
-
-                                            case '9':
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-                                                //adicionando os arquivos para mescla
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    mPdf.addArquivo(lsArq[i].Name);
-
-                                                //Mesclando..
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-                                                CapasPdf.CriarPdfApenasTexto($"Relatorio_Intervalo_Pgs_Total_{details.Total}", addInformacoesRelatorioIntervaloPgs(2));
-                                                CapasPdf.CriarPdfApenasTexto($"Relatorio_Qntd_Arquivos_Total_{details.Total}", addInformacoesRelatorioArquivosTxt(lsArq));
-                                                break;
-                                        }
-
-                                        break;
-
-                                    case '2':
-                                        switch(config[1])
-                                        {
-                                            case '1':
-                                                break;
-                                            case '2':
-                                                break;
-                                            case '3':
-                                                break;
-                                            case '4':
-                                                break;
-                                            case '5':
-                                                break;
-                                            case '6':
-
-                                                nomeArqRelatorioArquivos = $"Relatorio_Intervalo_Pgs_{details.Total}";
-
-                                                //instânciando classe MesclarPdf
-                                                mPdf = new MesclarPdf();
-
-                                                //criando capas de lote
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                    CapasPdf.CriaCapasdeLoteArqPdf(lsArq[i].Name, lsArq[i].Pgs, "duplex");
-
-                                                capas = CapasPdf.getNomeCapas();
-
-                                                for(int i = 0; i < lsArq.Count; i++)
-                                                {
-                                                    mPdf.addArquivo(lsArq[i].Name);
-                                                    mPdf.addArquivo(capas[i]);
-                                                }
-
-                                                //Mesclando...
-                                                mPdf.MesclarArquivos($"Mescla_{details.Total}");
-
-                                                CapasPdf.CriarPdfApenasTexto(nomeArqRelatorioArquivos, addInformacoesRelatorioIntervaloPgs(1));
-                                                CapasPdf.CriarPdfApenasTexto($"Relatorio_Qntd_Arquivos_Total_{details.Total}", addInformacoesRelatorioArquivosTxt(lsArq));
-
-                                                break;
-                                            case '7':
-                                                break;
-                                            case '8':
-                                                break;
-                                            case '9':
-                                                break;
-                                        }
-                                        break;
-                                }
-                                break;
-                        }
-                        #endregion                     
-
-                        toolStart.Image = Properties.Resources._1480398520_PauseNormalRed;
-                        controle[0] = true;
-
-                        //chamando método para carregar a classe com as informações dos arquivos
-                        setarInfoFile();
-
-                        //instânciando a variável time para inserir a data no arquivo gerado
-                        time = new DateTime();
-                        time = DateTime.Now;
-
-                        //toolProgressBar.Value = 100;
-                        //toolProgressBar.ToolTipText = "Concluído";
-
-                        //toolStart.Image = Properties.Resources._1480398503_start;
-                        //MessageBox.Show("Todos os arquivos foram mesclados", "Operação realizada com sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-                    }
-
-                }
-                else
-                {
-                    toolStart.Image = Properties.Resources._1480398503_start;
-                    controle[0] = false;
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Erro!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            }
-        }
-
-        //private void updateProgress(ProgressBar progress)
-        //{
-        //    ProgressBar.Value = progress.
-        //}
-
-        //private async Task<int> geraCapas(List<Arquivo> Arquivos, IProgress<int> progress)
-        //{
-        //    int totalCount = Arquivos.Count;
-        //    int processCount = await Task.Run<int>(() =>
-        //    {
-        //        int tempCount = 0;
-
-        //        foreach(var item in Arquivos)
-        //        {
-
-        //             Task.Delay(100);
-        //            if(progress != null)
-        //                progress.Report(tempCount * 100 / totalCount);
-
-        //            tempCount++;
-        //        }
-
-        //        return tempCount;
-        //    });
-
-        //   return processCount;
-            
-        //}
-
         /// <summary>
         /// Método para verificar se tem algum item no listviewer
         /// </summary>
         /// <returns></returns>
         private bool verificaQntdListView()
         {
-            if (lstViewerArquivos.Items.Count > 1)
+            if (config[0] == '3' || lstViewerArquivos.Items.Count > 1)
                 return true;
             else
                 throw new Exception("Lista não contém itens necessários para mescla!");
         }
     }
+    #endregion
 }
 

@@ -54,6 +54,21 @@ namespace MergeFilesPdf
             }
         }
 
+        public static void CriarArquivoConfig(string config)
+        {
+            try
+            {
+                using (StreamWriter stw = new StreamWriter(txtConfig, false, Encoding.Default))
+                {
+                    stw.Write(config);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Método para ler Arquivo de configuaração
         /// </summary>
@@ -96,9 +111,9 @@ namespace MergeFilesPdf
         {
             //config[0]== "1" --- arquivo .txt
             //config[0]== "2" --- arquivo .pdf
-            if(config[0] == '1')
+            if (config[0] == '1')
             {
-                if(
+                if (
                     MessageBox.Show($"Configurações Anteriores:" +
                     $"\n-----------------------------------------------------------" +
                     $"\nLógica:\n{Configuracao.txtLogicaArqTxt[(int)char.GetNumericValue(config[2])]}" +
@@ -114,9 +129,9 @@ namespace MergeFilesPdf
 
             }
             else
-            if(config[0] == '2')
+            if (config[0] == '2')
             {
-                if(
+                if (
                     MessageBox.Show($"Configurações Anteriores:" +
                     $"\n-----------------------------------------------------------" +
                     $"\nLógica:\n{Configuracao.txtLogicaArqPdf[(int)char.GetNumericValue(config[2])]}" +
@@ -129,6 +144,20 @@ namespace MergeFilesPdf
                     "\nDeseja continuar?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 { return true; }
             }
+            else
+            if (config[0] == '3')
+            {
+                if (MessageBox.Show($"Configurações Anteriores:" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\nLógica:\n{Configuracao.txtTipo[3]}" +
+                    $"\n-----------------------------------------------------------" +
+                    $"\n-----------------------------------------------------------" +
+                    "\n\n\nOs arquivos selecioandos serão apagados - **caso existam**" +
+                    "\nDeseja continuar?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    return true;
+                }
+            }
 
             //if não retorne true em nenhum dos 2 if, significa que a respostas foi não, assim retornando false
             return false;
@@ -138,8 +167,9 @@ namespace MergeFilesPdf
         // ------------------------------- 1 -------------------------------------
         public  static string[] txtTipo = new string[] {
             "Selecione uma opção:",
-            "1 - Arquivo de Texto (.txt)",
-            "2 - Arquivo de Documento (.pdf)"
+            "1 - Arquivo TXT",
+            "2 - Arquivo PDF",
+            "3 - Arquivo PDF - Modo Split"
         };
         #endregion
 
@@ -172,17 +202,16 @@ namespace MergeFilesPdf
         // ------------------------------- 2 -------------------------------------
         public static string[] txtGeracaoConfigPdf = new string[] {
             "Selecione uma opção:",
-            "1 - Apenas Capas",
-            "2 - Apenas Mesclar Arquivos",
-            "3 - Capas e Mesclar",
-            "4 - Capas, Mesclar e Relatório de Intervalo de pgs",
-            "5 - Capas, Mesclar e Relatório com qntd dos Arquivos",
-            "6 - Capas, Mesclar e Todos os Relatórios ",
-            "7 - Mesclar e Relatório de Intervalo de pgs",
-            "8 - Mesclar e Relatório com Qntd dos Arquivos",
-            "9 - Mesclar e Todos os Relatórios "
+            "1  - Apenas Capas",
+            "2  - Apenas Mesclar Arquivos",
+            "3  - Capas e Mesclar",
+            "4  - Capas, Mesclar e Relatório de Intervalo de pgs",
+            "5  - Capas, Mesclar e Relatório com qntd dos Arquivos",
+            "6  - Capas, Mesclar e Todos os Relatórios ",
+            "7  - Mesclar e Relatório de Intervalo de pgs",
+            "8  - Mesclar e Relatório com Qntd dos Arquivos",
+            "9  - Mesclar e Todos os Relatórios "
         };
-
 
                 #region config[2]
                 // ------------------------------- 3 -------------------------------------

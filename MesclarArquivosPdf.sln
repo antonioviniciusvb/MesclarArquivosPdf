@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeFilesPdf", "MergeFilesPdf\MergeFilesPdf.csproj", "{373EE8AF-DB45-435D-A62F-CE23EE642106}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vnsdll", "..\dll's\Vnsdll\Vnsdll\Vnsdll.csproj", "{E08ED7EB-6A86-4460-9955-5939A5D019B0}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup_Merge", "Setup_Merge\Setup_Merge.vdproj", "{3EAC38AA-E746-4EF4-B369-B6B338AD74D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,13 @@ Global
 		{E08ED7EB-6A86-4460-9955-5939A5D019B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E08ED7EB-6A86-4460-9955-5939A5D019B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E08ED7EB-6A86-4460-9955-5939A5D019B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EAC38AA-E746-4EF4-B369-B6B338AD74D3}.Debug|Any CPU.ActiveCfg = Debug
+		{3EAC38AA-E746-4EF4-B369-B6B338AD74D3}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D48E28FC-2057-4DB2-8334-8B5AACB85892}
 	EndGlobalSection
 EndGlobal
