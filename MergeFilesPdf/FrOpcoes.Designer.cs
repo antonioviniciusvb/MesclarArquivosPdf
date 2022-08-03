@@ -246,11 +246,6 @@ namespace MergeFilesPdf
             0,
             0,
             0});
-            this.numSplit.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
             this.numSplit.Name = "numSplit";
             this.numSplit.Size = new System.Drawing.Size(66, 22);
             this.numSplit.TabIndex = 0;

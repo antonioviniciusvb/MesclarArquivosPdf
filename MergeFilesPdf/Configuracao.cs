@@ -187,7 +187,7 @@ namespace MergeFilesPdf
                     "Selecione uma opção:",
                     "1 Registro - 1 linha",
                     "1 Registro - 2 linhas",
-                    "1 Regsitro - 3 linhas",
+                    "1 Registro - 3 linhas",
                     "1 Registro - 4 linhas",
                     "1 Registro - 5 linhas",
                     "Desconsiderar 1 linha",
